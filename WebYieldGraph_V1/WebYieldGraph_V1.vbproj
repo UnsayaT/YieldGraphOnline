@@ -188,6 +188,7 @@
     <Content Include="File\FLYieldgraph.pdf" />
     <Content Include="File\FLYieldgraphData.pdf" />
     <Content Include="File\FTYieldgraph.pdf" />
+    <Content Include="Img\circle.png" />
     <Content Include="Img\Config.png" />
     <Content Include="Img\Excel.png" />
     <Content Include="Img\Graph.PNG" />

@@ -617,7 +617,10 @@ Public Class FTYLD_ControlGraph
         Dim oldFile As String = "//10.28.33.113/www/TestYieldGraphControl/File/FTYieldgraph.pdf"
         Dim newFile As String = "//10.28.33.113/www/TestYieldGraphControl/File/FTYieldgraphData.pdf"
         Dim imagePath As String = "//10.28.33.113/www/TestYieldGraphControl/Img"
+        'Dim oldFile As String = "//10.28.33.113/www/TestYieldGraphControl/File/FTYieldgraph.pdf"
+        'Dim newFile As String = "//10.28.33.113/www/TestYieldGraphControl/File/FTYieldgraphData.pdf"
         Dim gif As iTextSharp.text.Image
+        Dim gif1 As iTextSharp.text.Image
         Dim time As DateTime = DateTime.Now
         Dim strSQL2 As String
         Dim dtAdapterTran As SqlDataAdapter
@@ -634,15 +637,22 @@ Public Class FTYLD_ControlGraph
                         Test1.YLD,
                         Test1.MCNo,
                         ProgramName,
-                        CASE WHEN GLCheck IS NULL THEN '' ELSE (Select GL_No From [DBx].[dbo].[QYIOP_GL] WHERE OP_No=OPNo) END AS GLCheck,
-                        OPNo,
+                        GLCheck,
+                        EndOPNo,
                         Package,
                         DeviceName,
-                        LEN(ProgramName) As LENProgrm
+                        LEN(ProgramName) As LENProgrm,
+                        LotStart,
+                        SocketNumCh1 As SocketNow1,SocketNumCh2 As SocketNow2,SocketNumCh3 As SocketNow3,SocketNumCh4 As SocketNow4,
+                        ChangedSocketNumCh1 As Socket1, ChangedSocketNumCh2 As Socket2,ChangedSocketNumCh3 As Socket3,ChangedSocketNumCh4 As Socket4,
+                        ChannelATesterNo ,ChannelBTesterNo,
+                        FirstEndYield,FinalYield
                         FROM( 
-                                Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,OPNo,
+                                Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,EndOPNo,
                                 CASE WHEN GLCheck IS NULL THEN '' ELSE GLCheck END AS GLCheck,
-                                CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD
+                                CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD,FirstEndYield,FinalYield,
+                                ChannelATesterNo,ChannelBTesterNo,SocketNumCh1,SocketNumCh2,SocketNumCh3,SocketNumCh4,
+                                ChangedSocketNumCh1,ChangedSocketNumCh2,ChangedSocketNumCh3,ChangedSocketNumCh4, Convert(Varchar(8),LotStartTime,105) AS LotStart
                                 FROM [DBx].[dbo].[TransactionData] INNER JOIN [DBx].[dbo].[FTData] ON TransactionData.LotNo=[DBx].[dbo].[FTData].LotNo WHERE ETC1 like '%" & Session("DName") & "%'  And LotEndTime Between  '" & Session("Date") & "' And '" & time & "' 
                             )As Test1"
                 dtAdapterTran = New SqlDataAdapter(strSQL2, objConn1)
@@ -659,18 +669,25 @@ Public Class FTYLD_ControlGraph
                     LastUCL,
                     LastAVE,
                     LastLCL,
-                    CASE WHEN GLCheck IS NULL THEN '' ELSE (Select GL_No From [DBx].[dbo].[QYIOP_GL] WHERE OP_No=OPNo) END AS GLCheck,
-                    OPNo,
+                    GLCheck,
+                    EndOPNo,
                     Package,
                     DeviceName,
                     LEN(ProgramName) As LENProgrm,
                     Convert(Varchar(10),UpdateTime,110) AS Thaitime,
                     Convert(Varchar(10),LastUpdateTime,110) AS LastTime,
-                    FT_Flow_Name
+                    FT_Flow_Name,
+                    LotStart,
+                    SocketNumCh1 As SocketNow1,SocketNumCh2 As SocketNow2,SocketNumCh3 As SocketNow3,SocketNumCh4 As SocketNow4,
+                    ChangedSocketNumCh1 As Socket1, ChangedSocketNumCh2 As Socket2,ChangedSocketNumCh3 As Socket3,ChangedSocketNumCh4 As Socket4,
+                    ChannelATesterNo ,ChannelBTesterNo,
+                    FirstEndYield,FinalYield
                     FROM( 
-                            Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,OPNo,
+                            Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,EndOPNo,
                             CASE WHEN GLCheck IS NULL THEN '' ELSE GLCheck END AS GLCheck,
-                            CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD
+                            CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD,FirstEndYield,FinalYield,
+                            ChannelATesterNo,ChannelBTesterNo,SocketNumCh1,SocketNumCh2,SocketNumCh3,SocketNumCh4,
+                            ChangedSocketNumCh1,ChangedSocketNumCh2,ChangedSocketNumCh3,ChangedSocketNumCh4, Convert(Varchar(8),LotStartTime,105) AS LotStart
                             FROM [DBx].[dbo].[TransactionData] INNER JOIN [DBx].[dbo].[FTData] ON TransactionData.LotNo=[DBx].[dbo].[FTData].LotNo WHERE ETC1='" & Session("DeviceName") & "' And LotEndTime <= '" & Now1 & "'
                         )As Test1
 
@@ -689,15 +706,22 @@ Public Class FTYLD_ControlGraph
                         Test1.YLD,
                         Test1.MCNo,
                         ProgramName,
-                        CASE WHEN GLCheck IS NULL THEN '' ELSE (Select GL_No From [DBx].[dbo].[QYIOP_GL] WHERE OP_No=OPNo) END AS GLCheck,
-                        OPNo,
+                        GLCheck,
+                        EndOPNo,
                         Package,
                         DeviceName,
-                        LEN(ProgramName) As LENProgrm
+                        LEN(ProgramName) As LENProgrm,
+                        LotStart,
+                        SocketNumCh1 As SocketNow1,SocketNumCh2 As SocketNow2,SocketNumCh3 As SocketNow3,SocketNumCh4 As SocketNow4,
+                        ChangedSocketNumCh1 As Socket1, ChangedSocketNumCh2 As Socket2,ChangedSocketNumCh3 As Socket3,ChangedSocketNumCh4 As Socket4,
+                        ChannelATesterNo ,ChannelBTesterNo,
+                        FirstEndYield,FinalYield
                         FROM( 
-                                Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,OPNo,
+                                Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,EndOPNo,
                                 CASE WHEN GLCheck IS NULL THEN '' ELSE GLCheck END AS GLCheck,
-                                CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD
+                                CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD,FirstEndYield,FinalYield,
+                                ChannelATesterNo,ChannelBTesterNo,SocketNumCh1,SocketNumCh2,SocketNumCh3,SocketNumCh4,
+                                ChangedSocketNumCh1,ChangedSocketNumCh2,ChangedSocketNumCh3,ChangedSocketNumCh4, Convert(Varchar(8),LotStartTime,105) AS LotStart
                                 FROM [DBx].[dbo].[TransactionData] INNER JOIN [DBx].[dbo].[FTData] ON TransactionData.LotNo=[DBx].[dbo].[FTData].LotNo WHERE ETC1 like '%" & Session("DName") & "%'  And LotEndTime Between  '" & Session("Date") & "' And '" & time & "' 
                                 And (ChannelATestBoxNo = '" & Session("FTBNo") & "' Or ChannelBTestBoxNo= '" & Session("FTBNo") & "')
                             )As Test1"
@@ -715,18 +739,25 @@ Public Class FTYLD_ControlGraph
                     LastUCL,
                     LastAVE,
                     LastLCL,
-                    CASE WHEN GLCheck IS NULL THEN '' ELSE (Select GL_No From [DBx].[dbo].[QYIOP_GL] WHERE OP_No=OPNo) END AS GLCheck,
-                    OPNo,
+                    GLCheck,
+                    EndOPNo,
                     Package,
                     DeviceName,
                     LEN(ProgramName) As LENProgrm,
                     Convert(Varchar(10),UpdateTime,110) AS Thaitime,
                     Convert(Varchar(10),LastUpdateTime,110) AS LastTime,
-                    FT_Flow_Name
+                    FT_Flow_Name,
+                    LotStart,
+                    SocketNumCh1 As SocketNow1,SocketNumCh2 As SocketNow2,SocketNumCh3 As SocketNow3,SocketNumCh4 As SocketNow4,
+                    ChangedSocketNumCh1 As Socket1, ChangedSocketNumCh2 As Socket2,ChangedSocketNumCh3 As Socket3,ChangedSocketNumCh4 As Socket4,
+                    ChannelATesterNo ,ChannelBTesterNo,
+                    FirstEndYield,FinalYield
                     FROM( 
-                            Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,OPNo
+                            Select  ETC1 As DeviceName,FTData.LotNo,MCNo, Package,ProgramName,LotEndTime,EndOPNo
                             CASE WHEN GLCheck IS NULL THEN '' ELSE GLCheck END AS GLCheck,
-                            CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD
+                            CASE WHEN InitialYield = 0 THEN 0 WHEN InitialYield IS NULL THEN '' ELSE InitialYield END AS YLD,FirstEndYield,FinalYield,
+                            ChannelATesterNo,ChannelBTesterNo,SocketNumCh1,SocketNumCh2,SocketNumCh3,SocketNumCh4,
+                            ChangedSocketNumCh1,ChangedSocketNumCh2,ChangedSocketNumCh3,ChangedSocketNumCh4, Convert(Varchar(8),LotStartTime,105) AS LotStart
                             FROM [DBx].[dbo].[TransactionData] INNER JOIN [DBx].[dbo].[FTData] ON TransactionData.LotNo=[DBx].[dbo].[FTData].LotNo WHERE ETC1='" & Session("DeviceName") & "' And LotEndTime <= '" & Now1 & "'
                             And (ChannelATestBoxNo = '" & Session("FTBNo") & "' Or ChannelBTestBoxNo= '" & Session("FTBNo") & "')
                         )As Test1
@@ -760,6 +791,7 @@ Public Class FTYLD_ControlGraph
         cb.SetFontAndSize(bf, 4)
 
         gif = iTextSharp.text.Image.GetInstance(imagePath + "/icon.png")
+        gif1 = iTextSharp.text.Image.GetInstance(imagePath + "/circle.png")
 
         For i = 0 To dtTran.Rows.Count - 1
             If i = 0 Then
@@ -970,28 +1002,114 @@ Public Class FTYLD_ControlGraph
                 gif.SetAbsolutePosition(a, 405) 'ตำแหน่ง
                 cb.AddImage(gif)
             End If
+
+            'FirstEndYield
+            gif1.ScaleToFit(5, 5) 'ขนาดรูป
+            If dtTran.Rows(i)("FirstEndYield") >= "100" Then
+                '100
+                gif1.SetAbsolutePosition(a, 516) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.9" And dtTran.Rows(i)("FirstEndYield") < "100" Then
+                '99.9
+                gif1.SetAbsolutePosition(a, 512) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.8" And dtTran.Rows(i)("FirstEndYield") < "99.9" Then
+                '99.8
+                gif1.SetAbsolutePosition(a, 508) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.7" And dtTran.Rows(i)("FirstEndYield") < "99.8" Then
+                '99.7
+                gif1.SetAbsolutePosition(a, 495) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.6" And dtTran.Rows(i)("FirstEndYield") < "99.7" Then
+                '99.6
+                gif1.SetAbsolutePosition(a, 485) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.5" And dtTran.Rows(i)("FirstEndYield") < "99.6" Then
+                '99.5
+                gif1.SetAbsolutePosition(a, 475) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.4" And dtTran.Rows(i)("FirstEndYield") < "99.5" Then
+                '99.4
+                gif1.SetAbsolutePosition(a, 465) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.3" And dtTran.Rows(i)("FirstEndYield") < "99.4" Then
+                '99.3
+                gif1.SetAbsolutePosition(a, 455) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.2" And dtTran.Rows(i)("FirstEndYield") < "99.3" Then
+                '99.2
+                gif1.SetAbsolutePosition(a, 445) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.1" And dtTran.Rows(i)("FirstEndYield") < "99.2" Then
+                '99.1
+                gif1.SetAbsolutePosition(a, 435) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "99.0" And dtTran.Rows(i)("FirstEndYield") < "99.1" Then
+                '99.0
+                gif1.SetAbsolutePosition(a, 425) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "98.0" And dtTran.Rows(i)("FirstEndYield") < "99.0" Then
+                '98.0
+                gif1.SetAbsolutePosition(a, 415) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            ElseIf dtTran.Rows(i)("FirstEndYield") >= "97.0" And dtTran.Rows(i)("FirstEndYield") < "98.0" Then
+                '97.0
+                gif1.SetAbsolutePosition(a, 405) 'ตำแหน่ง
+                cb.AddImage(gif1)
+            End If
             cb.BeginText()
+
             'Date
-            cb.ShowTextAligned(1, dtTran.Rows(i)("LotEndTime"), a, 295, 0)
+            cb.ShowTextAligned(1, dtTran.Rows(i)("LotStart"), a, 295, 0)
             'YLD
             cb.ShowTextAligned(1, dtTran.Rows(i)("YLD"), a, 285, 0)
+
+            'Tester No.
+            cb.ShowTextAligned(1, dtTran.Rows(i)("ChannelATesterNo"), a, 208, 0)
+            cb.ShowTextAligned(1, dtTran.Rows(i)("ChannelBTesterNo"), a, 205, 0)
+
+            'SocketNow
+            cb.ShowTextAligned(1, dtTran.Rows(i)("SocketNow1"), a, 199, 0)
+            cb.ShowTextAligned(1, dtTran.Rows(i)("SocketNow2"), a, 196, 0)
+            cb.ShowTextAligned(1, dtTran.Rows(i)("SocketNow3"), a, 192, 0)
+            cb.ShowTextAligned(1, dtTran.Rows(i)("SocketNow4"), a, 188, 0)
+
+            'Socket1
+            'cb.ShowTextAligned(1, "1234", a, 185, 0)
+            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket2"), a, 196, 0)
+            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket3"), a, 192, 0)
+            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket4"), a, 188, 0)
+
+            'Socket2
+            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket1"), a, 199, 0)
+            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket2"), a, 196, 0)
+            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket3"), a, 192, 0)
+            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket4"), a, 188, 0)
+
             'M/C
-            cb.ShowTextAligned(1, dtTran.Rows(i)("MCNo"), a, 174, 0)
+            cb.ShowTextAligned(1, dtTran.Rows(i)("MCNo"), a, 167, 0)
+
             'Program Ver
             Dim ProgramName1, ProgramName2 As String
             ProgramName1 = Mid(dtTran.Rows(i)("ProgramName"), 1, 4)
             ProgramName2 = Mid(dtTran.Rows(i)("ProgramName"), 5, dtTran.Rows(i)("LENProgrm"))
-            cb.ShowTextAligned(1, ProgramName1, a, 167, 0)
-            cb.ShowTextAligned(1, ProgramName2, b, 163, 0)
+            cb.ShowTextAligned(1, ProgramName1, a, 152, 0)
+            cb.ShowTextAligned(1, ProgramName2, b, 147, 0)
 
             'OPNo
-            cb.ShowTextAligned(1, dtTran.Rows(i)("OPNo"), a, 141, 0)
+            If IsDBNull(dtTran.Rows(i)("EndOPNo")) Then
+            Else
+                cb.ShowTextAligned(1, dtTran.Rows(i)("EndOPNo"), a, 138, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("EndOPNo"), a, 125, 0)
+            End If
 
             'GLCheck
             If IsDBNull(dtTran.Rows(i)("GLCheck")) Then
             Else
-                cb.ShowTextAligned(1, dtTran.Rows(i)("GLCheck"), a, 95, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("GLCheck"), a, 112, 0)
             End If
+
             cb.EndText()
         Next
 
@@ -1120,6 +1238,8 @@ Public Class FTYLD_ControlGraph
         cb.Stroke()
         cb.BeginText()
 
+
+
         'This UCL/LCL
         cb1.SetColorFill(GrayColor.RED)
         cb1.ShowTextAligned(1, Me.Label3.Text, 335, 80, 0)
@@ -1133,6 +1253,7 @@ Public Class FTYLD_ControlGraph
         Else
             cb1.ShowTextAligned(1, Session("StdevFT"), 320, 30, 0)
         End If
+
         'This AVE
         cb1.BeginText()
         cb1.SetColorFill(GrayColor.BLUE)
