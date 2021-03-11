@@ -654,7 +654,8 @@ Public Class FTYLD_ControlGraph
                                 ChannelATesterNo,ChannelBTesterNo,SocketNumCh1,SocketNumCh2,SocketNumCh3,SocketNumCh4,
                                 ChangedSocketNumCh1,ChangedSocketNumCh2,ChangedSocketNumCh3,ChangedSocketNumCh4, Convert(Varchar(8),LotStartTime,105) AS LotStart
                                 FROM [DBx].[dbo].[TransactionData] INNER JOIN [DBx].[dbo].[FTData] ON TransactionData.LotNo=[DBx].[dbo].[FTData].LotNo WHERE ETC1 like '%" & Session("DName") & "%'  And LotEndTime Between  '" & Session("Date") & "' And '" & time & "' 
-                            )As Test1"
+                            )As Test1
+                        ORDER BY LotStart ASC"
                 dtAdapterTran = New SqlDataAdapter(strSQL2, objConn1)
                 dtAdapterTran.Fill(dtTran)
             Else
@@ -695,7 +696,8 @@ Public Class FTYLD_ControlGraph
 
                     (Select DeviceName As Device,LCL,UpdateTime,UCL,AVE,LastUCL,LastAVE,LastLCL,LastUpdateTime,FT_Flow_Name,BoxFTB,Chief
                     From [DBx].[dbo].[Cal_LCL]) As Test2 on Test1.DeviceName = Test2.Device
-                    where Test2.Device = '" & Me.Label2.Text & "' And FT_Flow_Name = '" & Me.Label6.Text & "' "
+                    where Test2.Device = '" & Me.Label2.Text & "' And FT_Flow_Name = '" & Me.Label6.Text & "' 
+                    ORDER BY LotStart ASC"
                 dtAdapterTran = New SqlDataAdapter(strSQL2, objConn1)
                 dtAdapterTran.Fill(dtTran)
             End If
@@ -724,7 +726,8 @@ Public Class FTYLD_ControlGraph
                                 ChangedSocketNumCh1,ChangedSocketNumCh2,ChangedSocketNumCh3,ChangedSocketNumCh4, Convert(Varchar(8),LotStartTime,105) AS LotStart
                                 FROM [DBx].[dbo].[TransactionData] INNER JOIN [DBx].[dbo].[FTData] ON TransactionData.LotNo=[DBx].[dbo].[FTData].LotNo WHERE ETC1 like '%" & Session("DName") & "%'  And LotEndTime Between  '" & Session("Date") & "' And '" & time & "' 
                                 And (ChannelATestBoxNo = '" & Session("FTBNo") & "' Or ChannelBTestBoxNo= '" & Session("FTBNo") & "')
-                            )As Test1"
+                            )As Test1 
+                        ORDER BY LotStart ASC"
                 dtAdapterTran = New SqlDataAdapter(strSQL2, objConn1)
                 dtAdapterTran.Fill(dtTran)
             Else
@@ -766,7 +769,8 @@ Public Class FTYLD_ControlGraph
 
                     (Select DeviceName As Device,LCL,UpdateTime,UCL,AVE,LastUCL,LastAVE,LastLCL,LastUpdateTime,FT_Flow_Name,BoxFTB
                     From [DBx].[dbo].[Cal_LCL]) As Test2 on Test1.DeviceName = Test2.Device
-                    where Test2.Device = '" & Me.Label2.Text & "' And FT_Flow_Name = '" & Me.Label6.Text & "' "
+                    where Test2.Device = '" & Me.Label2.Text & "' And FT_Flow_Name = '" & Me.Label6.Text & "' 
+                    ORDER BY LotStart ASC"
                 dtAdapterTran = New SqlDataAdapter(strSQL2, objConn1)
                 dtAdapterTran.Fill(dtTran)
             End If
@@ -900,10 +904,10 @@ Public Class FTYLD_ControlGraph
                 c = 490
                 d = 508
             ElseIf i = 21 Then
-                a = 567
-                b = 567
-                c = 508
-                d = 526
+                'a = 567
+                'b = 567
+                'c = 508
+                'd = 526
             ElseIf i = 22 Then
                 a = 579
                 b = 579
@@ -1062,6 +1066,7 @@ Public Class FTYLD_ControlGraph
 
             'Date
             cb.ShowTextAligned(1, dtTran.Rows(i)("LotStart"), a, 295, 0)
+
             'YLD
             cb.ShowTextAligned(1, dtTran.Rows(i)("YLD"), a, 285, 0)
 
@@ -1076,16 +1081,25 @@ Public Class FTYLD_ControlGraph
             cb.ShowTextAligned(1, dtTran.Rows(i)("SocketNow4"), a, 188, 0)
 
             'Socket1
-            'cb.ShowTextAligned(1, "1234", a, 185, 0)
-            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket2"), a, 196, 0)
-            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket3"), a, 192, 0)
-            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket4"), a, 188, 0)
+            If IsDBNull(dtTran.Rows(i)("Socket1")) And IsDBNull(dtTran.Rows(i)("Socket2")) And IsDBNull(dtTran.Rows(i)("Socket3")) And IsDBNull(dtTran.Rows(i)("Socket4")) Then
 
-            'Socket2
-            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket1"), a, 199, 0)
-            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket2"), a, 196, 0)
-            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket3"), a, 192, 0)
-            'cb.ShowTextAligned(1, dtTran.Rows(i)("Socket4"), a, 188, 0)
+            ElseIf IsDBNull(dtTran.Rows(i)("Socket2")) And IsDBNull(dtTran.Rows(i)("Socket3")) And IsDBNull(dtTran.Rows(i)("Socket4")) Then
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket1"), a, 185, 0)
+            ElseIf IsDBNull(dtTran.Rows(i)("Socket3")) And IsDBNull(dtTran.Rows(i)("Socket4")) Then
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket1"), a, 185, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket2"), d, 185, 0)
+            ElseIf IsDBNull(dtTran.Rows(i)("Socket4")) Then
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket1"), a, 185, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket2"), d, 185, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket3"), a, 181, 0)
+            Else
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket1"), a, 185, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket2"), d, 185, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket3"), a, 181, 0)
+                cb.ShowTextAligned(1, dtTran.Rows(i)("Socket4"), d, 181, 0)
+            End If
+
+
 
             'M/C
             cb.ShowTextAligned(1, dtTran.Rows(i)("MCNo"), a, 167, 0)
